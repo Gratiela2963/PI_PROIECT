@@ -1,0 +1,1338 @@
+\documentclass{amsart}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{mathrsfs}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{subfig}
+\usepackage[romanian]{babel}
+\usepackage[colorlinks,unicode]{hyperref}
+\usepackage[foot]{amsaddr}
+\usepackage{wallpaper}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[romanian]{babel}
+\usepackage{float}
+
+%\numberwithin{equation}{section}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{ %
+  backgroundcolor=\color{white},   % background color
+  basicstyle=\footnotesize,        % font size
+  breaklines=true,                 % line breaking
+  captionpos=b,                    % caption position
+  commentstyle=\color{mygreen},    % comments
+  escapeinside={\%*}{*)},          % LaTeX inside code
+  keywordstyle=\color{blue},       % keywords
+  stringstyle=\color{mymauve}      % string literals
+}
+
+\makeatletter
+\def\@setemails{%
+  \ifnum\theg@author > 1
+    \mbox{{\itshape Adrese e-mail}:\space}{\ttfamily\emails}.
+  \else
+    \mbox{{\itshape Adresa e-mail}:\space}{\ttfamily\emails}.
+  \fi%
+}
+\makeatother
+
+\addtolength{\wpXoffset}{-5.38cm}
+\addtolength{\wpYoffset}{11.5cm}
+\CenterWallPaper{0.15}{FMI.png}
+
+\title{Prelucrarea Imaginilor}
+
+\author{Oprișan Elena-Grațiela}
+\address{Facultatea de Matematic\u{a} \c{s}i Informatic\u{a}, Anul 3, Sec\c{t}ia Informatic\u{a}}
+\email{elena.oprisan03@e-uvt.ro}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+    { \textbf{Interfața}}
+\end{center}
+
+Proiectul implementează, în Python, toți algoritmii studiați în cadrul laboratorului, precum și temele din acest semestru.
+
+\subsection*{Biblioteci Utilizate}
+\begin{itemize}
+    \item \textbf{Tkinter}: crearea interfeței grafice.
+    \item \textbf{OpenCV}: operații de procesare a imaginilor.
+    \item \textbf{NumPy}: operații numerice eficiente.
+    \item \textbf{Matplotlib}: generarea vizualizărilor și graficelor.
+\end{itemize}
+
+Interfața grafică a fost realizată folosind biblioteca \textbf{Tkinter}, oferind utilizatorului o experiență vizuală plăcută și interactivă. Elementele cheie ale interfeței sunt:
+\begin{itemize}
+    \item \textbf{Canvas cu gradient de fundal}: Un efect vizual plăcut este obținut prin desenarea unui gradient din albastru deschis spre albastru închis.
+    \item \textbf{Frame-uri pentru organizare}: Funcționalitățile sunt împărțite în două secțiuni principale:
+    \begin{itemize}
+        \item \textbf{Laboratoare}: implementările algoritmilor studiați.
+        \item \textbf{Teme}: aplicațiile practice realizate în cadrul semestrului.
+    \end{itemize}
+    \item \textbf{Butoane interactive}: Fiecare laborator sau temă are asociat un buton, cu o denumire clară și design uniform. Butoanele sunt colorate și stilizate pentru a fi ușor de identificat.
+    \item \textbf{Dialoguri grafice de selectare a imaginilor}: Utilizatorul poate selecta cu ușurință imaginile din sistemul său de fișiere.
+\end{itemize}
+
+\subsection*{Structura și Organizarea Codului}
+Codul este structurat modular pentru a asigura o utilizare eficientă și o întreținere ușoară:
+\begin{enumerate}
+    \item \textbf{Funcții de laborator}: Fiecare laborator este implementat ca o funcție independentă, care realizează o anumită prelucrare a imaginilor. Exemple includ:
+    \begin{itemize}
+        \item conversia în nuanțe de gri și binarizarea,
+        \item histogramă și egalizare,
+        \item aplicarea filtrelor spațiale și frecvențiale,
+        \item analiza componentelor conectate.
+    \end{itemize}
+    \item \textbf{Funcții pentru teme}: Aceste funcții sunt mai complexe, implementând algoritmi specifici cerințelor tematice, cum ar fi:
+    \begin{itemize}
+        \item detectarea pragurilor de histogramă,
+        \item corecția luminozității și contrastului,
+        \item aplicarea filtrelor Gaussiene și bidimensionale,
+    \end{itemize}
+    \item \textbf{Funcții auxiliare}: Pentru reutilizare și modularitate, sunt implementate funcții generale, precum:
+    \begin{itemize}
+        \item selectarea imaginilor,
+        \item afișarea rezultatelor folosind OpenCV,
+        \item salvarea imaginilor procesate.
+    \end{itemize}
+    \item \textbf{Legarea interfeței cu funcțiile de procesare}: Fiecare buton din interfață este asociat unei funcții corespunzătoare prin metoda \texttt{command}.
+\end{enumerate}
+
+\subsection*{Fluxul de Lucru al Aplicației}
+Fluxul principal al aplicației este următorul:
+\begin{enumerate}
+    \item La deschiderea aplicației, utilizatorul este întâmpinat de o fereastră cu două secțiuni: \textbf{Laboratoare} și \textbf{Teme}.
+    \item Fiecare laborator sau temă poate fi accesat printr-un buton specific.
+    \item Odată apăsat un buton, utilizatorului i se cere să selecteze o imagine folosind un dialog grafic.
+    \item Procesul selectat este aplicat imaginii, iar rezultatele sunt afișate pe ecran.
+\end{enumerate}
+
+\subsection*{Concluzii și Caracteristici Distincte}
+Această aplicație oferă o platformă interactivă pentru explorarea și aplicarea algoritmilor de prelucrare a imaginilor, fiind un instrument util atât pentru învățare, cât și pentru demonstrații practice. Caracteristicile sale cheie includ:
+\begin{itemize}
+    \item \textbf{Interfață intuitivă}: ușor de utilizat de către studenți și utilizatori cu cunoștințe limitate în domeniul procesării imaginilor.
+    \item \textbf{Flexibilitate și extensibilitate}: permite adăugarea de noi funcții sau algoritmi fără a afecta structura generală.
+    \item \textbf{Vizualizare detaliată}: imaginile procesate și graficele sunt afișate clar și pot fi explorate simultan.
+    \item \textbf{Automatizare parțială}: rezultatele sunt salvate automat, evitând pierderile accidentale de date.
+\end{itemize}
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{interfata_pi.png} 
+    \caption{Interfata utilizator}
+    \label{fig:imagine_centrala} 
+\end{figure}
+\section{Laborator 1}
+
+Funcția \texttt{laborator\_1} este concepută pentru a afișa o imagine originală selectată de utilizator utilizând biblioteca \texttt{OpenCV}. Procesul începe cu selecția imaginii prin funcția \texttt{select\_image()}. Dacă utilizatorul nu selectează nicio imagine, funcția notifică prin mesajul „Nicio imagine NU e selectată.” și oprește execuția.
+
+Imaginea selectată este încărcată folosind \texttt{cv2.imread()}. Dacă imaginea nu este validă sau nu poate fi găsită, se afișează mesajul „Imaginea nu există sau formatul este invalid.” și execuția este oprită. Dacă imaginea este validă, aceasta este afișată într-o fereastră utilizând \texttt{cv2.imshow()} sub titlul „Imagine Originală”. Programul așteaptă o intrare de la tastatură pentru a continua. La apăsarea tastei \texttt{ESC}, toate ferestrele sunt închise cu \texttt{cv2.destroyAllWindows()}.
+
+\begin{lstlisting}[language=python,caption={Funcția laborator\_1 }]
+def laborator_1():
+    image_path = select_image()
+    if not image_path:
+        print("Nicio imagine NU e selectata.")
+        return
+
+    img = cv2.imread(image_path)
+    if img is None:
+        print("Imaginea nu exista sau formatul este invalid.")
+        return
+    cv2.imshow('Imagine Originala', img)
+    key = cv2.waitKey(0)
+    if key == 27:
+        cv2.destroyAllWindows()
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\subfloat[Imaginea original\u{a}]{\includegraphics[width=5.8cm]{laborator1_pi.png}}
+\caption{Output al funcției laborator\_1}
+\end{figure}
+
+
+
+\section{Laborator 2}
+
+Funcția \texttt{laborator\_2} permite procesarea unei imagini selectate de utilizator, aplicând diferite transformări și afișând rezultatele în ferestre separate. De asemenea, generează histograme care descriu distribuția pixelilor imaginii. Imaginile procesate sunt salvate într-un director specificat.
+
+Funcția începe prin selectarea imaginii de către utilizator. Dacă nu se selectează o imagine, un mesaj notifică acest lucru, iar execuția se oprește. Imaginea selectată este validată, iar dacă formatul sau fișierul nu este valid, se oprește execuția și se afișează un mesaj de eroare.
+
+Imaginea este procesată astfel:
+\begin{itemize}
+    \item Este convertită la o reprezentare în niveluri de gri (\textit{grayscale}).
+    \item Se aplică un prag pentru a obține o imagine binară (\textit{alb-negru}).
+    \item Este transformată în spațiul de culoare HSV (\textit{nuanță, saturație, valoare}).
+\end{itemize}
+
+Toate versiunile imaginii sunt afișate în ferestre separate: imaginea originală, \textit{grayscale}, \textit{alb-negru} și HSV.
+
+Funcția creează două histograme pentru a vizualiza distribuția pixelilor:
+\begin{itemize}
+    \item O histogramă \textit{grayscale}, care prezintă distribuția intensităților pixelilor în imaginea \textit{grayscale}.
+    \item O histogramă color, care prezintă distribuțiile pentru canalele de culoare \textit{roșu}, \textit{verde} și \textit{albastru}.
+\end{itemize}
+
+Imaginile rezultate sunt salvate automat într-un director predefinit de pe sistemul utilizatorului. Dacă directorul nu există, funcția îl creează. Numele fișierelor salvate reflectă tipul de procesare aplicată imaginii.
+
+Funcția finalizează execuția așteptând o acțiune din partea utilizatorului. Toate ferestrele sunt închise atunci când utilizatorul apasă tasta \texttt{ESC}.
+
+\begin{lstlisting}[language=python,caption={Funcția laborator\_2 }]
+def laborator_2():
+    image_path = select_image()
+    if not image_path:
+        print("Nicio imagine selectata.")
+        return
+
+    directory = r'C:/Users/alex_/Desktop/pi'
+    img = cv2.imread(image_path)
+    if img is None:
+        print("Imaginea nu exista sau formatul este invalid.")
+        return
+
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    (thresh, BlackAndWhiteImage) = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+    hsvImage = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    cv2.imshow('Original Image', img)
+    cv2.imshow('Gray Image', gray)
+    cv2.imshow('Black & White Image', BlackAndWhiteImage)
+    cv2.imshow('HSV Image', hsvImage)
+
+    def show_gray_histogram():
+        histogram = cv2.calcHist([gray], [0], None, [256], [0, 256])
+        hist_img = np.zeros((300, 512, 3), dtype=np.uint8)
+        cv2.normalize(histogram, histogram, 0, 300, cv2.NORM_MINMAX)
+        for x in range(1, 256):
+            cv2.line(hist_img,
+                     (int((x-1)*2), 300 - int(histogram[x-1])),
+                     (int(x*2), 300 - int(histogram[x])),
+                     (255, 255, 255), thickness=1)
+        cv2.imshow("Histograma Grayscale", hist_img)
+
+    def show_color_histogram():
+        hist_img = np.zeros((300, 512, 3), dtype=np.uint8)
+        colors = ('b', 'g', 'r')
+        for i, col in enumerate(colors):
+            histogram = cv2.calcHist([img], [i], None, [256], [0, 256])
+            cv2.normalize(histogram, histogram, 0, 300, cv2.NORM_MINMAX)
+            for x in range(1, 256):
+                cv2.line(hist_img,
+                         (int((x-1)*2), 300 - int(histogram[x-1])),
+                         (int(x*2), 300 - int(histogram[x])),
+                         (255 if col == 'b' else 0, 255 if col == 'g' else 0, 255 if col == 'r' else 0), thickness=1)
+        cv2.imshow("Histograma Color", hist_img)
+
+    show_gray_histogram()
+    show_color_histogram()
+    os.makedirs(directory, exist_ok=True)
+    os.chdir(directory)
+    cv2.imwrite('SavedFlower_Gray.jpg', gray)
+    cv2.imwrite('SavedFlower_BW.jpg', BlackAndWhiteImage)
+    cv2.imwrite('SavedFlower_HSV.jpg', hsvImage)
+    print('Imagini salvate cu succes.')
+    key = cv2.waitKey(0)
+    if key == 27:
+        cv2.destroyAllWindows()
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\subfloat[Imaginea originală]{\includegraphics[width=5.5cm]{laborator1_pi.png}}
+\subfloat[Imaginea grayscale]{\includegraphics[width=5.5cm]{lab2_pi_2.png}}
+\subfloat[Imaginea HSV]{\includegraphics[width=5.5cm]{lab2_pi_3.png}} \\
+\subfloat[Imaginea alb-negru]{\includegraphics[width=5.5cm]{lab2_pi_4.png}}
+\subfloat[Histograma color]{\includegraphics[width=5.5cm]{lab2_pi_histo1.png}}
+\subfloat[Histograma grayscale]{\includegraphics[width=5.5cm]{lab2_pi_histo2.png}}
+\caption{Imagini generate de funcția \texttt{laborator\_2}}
+\end{figure}
+
+
+
+
+
+
+\section{Laborator 3}
+
+Funcția \texttt{laborator\_3} aplică mai multe transformări asupra unei imagini selectate de utilizator, afișând rezultatele într-un mod intuitiv și interactiv. Imaginile rezultate evidențiază diferite tehnici de procesare.
+
+La început, utilizatorul selectează imaginea folosind funcția \texttt{select\_image()}. Dacă nu este selectată o imagine sau dacă aceasta nu este validă, funcția afișează un mesaj de eroare și oprește execuția.
+
+Funcția efectuează următoarele procesări:
+\begin{itemize}
+    \item \textit{Negativarea imaginii}: transformă fiecare pixel astfel încât valorile de intensitate să fie inversate (255 - valoarea pixelului).
+    \item \textit{Modificarea contrastului}: crește contrastul imaginii folosind un factor de scalare (\texttt{alpha=2.0}) și un offset nul (\texttt{beta=0}).
+    \item \textit{Corecția gamma}: ajustează luminozitatea imaginii prin aplicarea unei transformări neliniare bazate pe o valoare de gamma.
+    \item \textit{Modificarea luminozității}: crește luminozitatea imaginii prin adăugarea unei valori constante (\texttt{beta=60}).
+\end{itemize}
+
+Toate imaginile procesate, inclusiv imaginea originală, sunt afișate în ferestre separate utilizând \texttt{cv2.imshow()}. Utilizatorul poate închide toate ferestrele apăsând tasta \texttt{ESC}.
+
+\begin{lstlisting}[language=python,caption={Funcția laborator\_3 }]
+def laborator_3():
+        image_path = select_image()
+        if not image_path:
+            print("Nicio imagine selectata.")
+            return
+
+        img = cv2.imread(image_path)
+        if img is None:
+            print("Imaginea nu există sau formatul este invalid.")
+            return
+
+        negative_img = 255 - img
+        contrast_img = cv2.convertScaleAbs(img, alpha=2.0, beta=0)
+        gamma = 3
+        invGamma = 1.0 / gamma
+        table = np.array([((i / 255.0) ** invGamma) * 255 for i in np.arange(0, 256)]).astype("uint8")
+        gamma_img = cv2.LUT(img, table)
+        brightness_img = cv2.convertScaleAbs(img, alpha=1, beta=60)
+
+        cv2.imshow("Imaginea originala", img)
+        cv2.imshow('Negativarea imaginii', negative_img)
+        cv2.imshow('Modificarea contrastului', contrast_img)
+        cv2.imshow('Corectia gamma', gamma_img)
+        cv2.imshow('Modificarea luminozitatii', brightness_img)
+
+        key = cv2.waitKey(0)
+        if key == 27:
+            cv2.destroyAllWindows()
+
+
+
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\subfloat[Imaginea originală]{\includegraphics[width=5.5cm]{laborator1_pi.png}}
+\subfloat[Negativarea imaginii]{\includegraphics[width=5.5cm]{lab3_pi_2.png}}
+\subfloat[Modificarea contrastului]{\includegraphics[width=5.5cm]{lab3_pi_3.png}} \\
+\subfloat[Corecția gamma]{\includegraphics[width=5.5cm]{lab3_pi_4.png}}
+\subfloat[Modificarea luminozității]{\includegraphics[width=5.5cm]{lab3_pi_5.png}}
+\caption{Imagini generate de funcția \texttt{laborator\_3}}
+\end{figure}
+
+
+
+
+\section{Laborator 4}
+\subsection*{Descriere pentru funcția \texttt{laborator\_4}}
+
+Funcția \texttt{laborator\_4} implementează și compară diverse metode de procesare a unei imagini, utilizând filtre bine cunoscute în prelucrarea imaginilor digitale. Scopul principal este de a demonstra cum influențează aceste filtre structura și detaliile imaginii.
+
+La început, utilizatorul este invitat să selecteze o imagine prin funcția \texttt{select\_image()}. Imaginea este convertită automat în tonuri de gri utilizând funcția \texttt{cv2.imread()} cu parametrul \texttt{cv2.IMREAD\_GRAYSCALE}, astfel încât procesările să fie aplicate pe o singură dimensiune de intensitate.
+
+Funcția aplică următoarele operații:
+
+\begin{itemize}
+    \item \textit{Filtrul mediei aritmetice}: 
+    \begin{itemize}
+        \item Se utilizează un kernel de dimensiune $3 \times 3$, cu toate valorile egale cu $\frac{1}{9}$. 
+        \item Kernelul este aplicat pe întreaga imagine folosind funcția \texttt{cv2.filter2D()}.
+        \item Rezultatul este o imagine netezită, în care detaliile fine sunt atenuate, iar zgomotul este redus.
+    \end{itemize}
+    
+    \item \textit{Gaussian Blur}:
+    \begin{itemize}
+        \item Se utilizează funcția \texttt{cv2.GaussianBlur()} pentru a aplica un filtru gaussian.
+        \item Kernelul gaussian este generat automat de funcție pe baza dimensiunii date ($3 \times 3$) și a parametrului \texttt{sigmaX}, care controlează cât de mult este estompată imaginea.
+        \item Gaussian Blur păstrează tranzițiile subtile între intensități și este util pentru reducerea zgomotului fără a sacrifica prea multe detalii.
+    \end{itemize}
+    
+    \item \textit{Filtrul Laplace}:
+    \begin{itemize}
+        \item Se calculează operatorul Laplace al imaginii utilizând funcția \texttt{cv2.Laplacian()}.
+        \item Operatorul evidențiază marginile prin detectarea gradientelor mari ale intensităților pixelilor.
+        \item Rezultatul este o imagine în care marginile sunt bine definite, iar detaliile fine devin mai evidente.
+    \end{itemize}
+    
+    \item \textit{Kernel personalizat (filtru de trecere sus)}:
+    \begin{itemize}
+        \item Se definește un kernel personalizat $3 \times 3$ pentru a detecta detaliile fine din imagine.
+        \item Kernelul este aplicat folosind \texttt{cv2.filter2D()}, similar cu filtrul mediei aritmetice.
+        \item Rezultatul este o imagine în care componentele de frecvență ridicată sunt accentuate, iar fundalul este estompat.
+    \end{itemize}
+\end{itemize}
+
+Rezultatele sunt afișate utilizând două metode: 
+\begin{itemize}
+    \item \textit{Ferestre interactive}: Imaginile procesate sunt afișate cu \texttt{cv2.imshow()} în ferestre separate.
+    \item \textit{Diagramă cu mai multe subgraficuri}: Rezultatele sunt plasate într-o diagramă generată cu \texttt{matplotlib}, având titluri și dimensiuni uniforme pentru o comparație clară.
+\end{itemize}
+\newpage
+\begin{lstlisting}[language=python,caption={Funcția laborator\_4 }]
+def contur_extragere(imagine):
+    gri = cv2.cvtColor(imagine, cv2.COLOR_BGR2GRAY)
+    blur = cv2.blur(gri, (3, 3))
+    kernel = np.ones((5, 5), np.uint8)
+    gradient = cv2.morphologyEx(blur, cv2.MORPH_GRADIENT, kernel)
+    return gradient
+
+
+def gaussian_blur(image, kernel_size, sigma):
+    kernel = cv2.getGaussianKernel(kernel_size, sigma)
+    gaussian_kernel = np.outer(kernel, kernel)
+    return cv2.filter2D(image, -1, gaussian_kernel)
+
+
+def umplere_regiuni(imagine):
+    gri = cv2.cvtColor(imagine, cv2.COLOR_BGR2GRAY)
+    _, binar = cv2.threshold(gri, 127, 255, cv2.THRESH_BINARY_INV)
+    kernel = np.ones((9, 9), np.uint8)
+    closing = cv2.morphologyEx(binar, cv2.MORPH_CLOSE, kernel)
+    return closing
+
+
+def bidimensional_filter(image, kernel):
+    return cv2.filter2D(image, -1, kernel)
+
+
+def show_images(original, filtered1, filtered2):
+    cv2.imshow("Original", original)
+    cv2.imshow("Gaussian Blur", filtered1)
+    cv2.imshow("Bidimensional Filter", filtered2)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+
+def laborator_4():
+    image_path = select_image()
+    if not image_path:
+        print("Nicio imagine selectata.")
+        return
+
+    img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if img is None:
+        print("Imaginea nu exista sau formatul este invalid.")
+        return
+
+    mean_kernel = np.ones((3, 3), np.float32) / 9
+    img_mean_blur = cv2.filter2D(img, -1, mean_kernel)
+    img_gaussian_blur = cv2.GaussianBlur(img, (3, 3), sigmaX=1)
+    img_laplacian = cv2.Laplacian(img, cv2.CV_64F)
+    custom_kernel = np.array([[0, -1, 0],
+                              [-1, 4, -1],
+                              [0, -1, 0]])
+    img_high_pass = cv2.filter2D(img, -1, custom_kernel)
+
+    fig, axs = plt.subplots(2, 3, figsize=(12, 8))
+    fig.suptitle("Compararea filtrelor aplicate")
+
+    axs[0, 0].imshow(img, cmap='gray')
+    axs[0, 0].set_title("Originala")
+    axs[0, 0].axis('off')
+
+    axs[0, 1].imshow(img_mean_blur, cmap='gray')
+    axs[0, 1].set_title("Medie aritmetica (3x3)")
+    axs[0, 1].axis('off')
+
+    axs[0, 2].imshow(img_gaussian_blur, cmap='gray')
+    axs[0, 2].set_title("Gaussian Blur")
+    axs[0, 2].axis('off')
+
+    axs[1, 0].imshow(img_laplacian, cmap='gray')
+    axs[1, 0].set_title("Filtru Laplace")
+    axs[1, 0].axis('off')
+
+    axs[1, 1].imshow(img_high_pass, cmap='gray')
+    axs[1, 1].set_title("Kernel personalizat")
+    axs[1, 1].axis('off')
+
+    axs[1, 2].axis('off')
+
+    cv2.imshow("Originala", img)
+    cv2.imshow("Medie aritmetica (3x3)", img_mean_blur)
+    cv2.imshow("Gaussian Blur", img_gaussian_blur)
+    cv2.imshow("Filtru Laplace", np.uint8(img_laplacian))
+    cv2.imshow("Kernel personalizat", img_high_pass)
+
+    key = cv2.waitKey(0)
+    if key == 27:
+        cv2.destroyAllWindows()
+
+\end{lstlisting}
+\begin{figure}[H]
+\centering
+\subfloat[Imaginea originală]{\includegraphics[width=5.5cm]{lab4_pi_1.png}}
+\subfloat[Medie aritmetică (3x3)]{\includegraphics[width=5.5cm]{lab4_pi_2.png}}
+\subfloat[Gaussian Blur]{\includegraphics[width=5.5cm]{lab4_pi_3.png}}
+\vspace{-5mm} \\ % Ajustează spațiul dintre primul și al doilea rând
+\subfloat[Filtru Laplace]{\includegraphics[width=5.5cm]{lab4_pi_4.png}}
+\subfloat[Kernel personalizat]{\includegraphics[width=5.5cm]{lab4_pi_5.png}} \\
+\caption{Imagini generate de funcția \texttt{laborator\_4}, inclusiv analiza suplimentară.}
+\end{figure}
+
+
+
+
+
+\section{Laborator 5}
+
+Funcția \texttt{laborator\_5} implementează și compară două metode de filtrare utilizate frecvent în prelucrarea imaginilor digitale: filtrarea Gaussiană și filtrarea bidimensională. Scopul este de a analiza performanța și efectele fiecărei metode asupra unei imagini.
+
+La început, utilizatorul este invitat să selecteze o imagine. Imaginea este validată, iar dacă aceasta nu este validă, funcția afișează un mesaj de eroare și oprește execuția.
+
+Funcția aplică următoarele operații:
+
+\begin{itemize}
+    \item \textbf{Gaussian Blur}: 
+    \begin{itemize}
+        \item Aplică un filtru gaussian pe imagine, utilizând un kernel de dimensiune $5 \times 5$ și un factor de estompare \texttt{sigma=1.5}.
+        \item Estomparea gaussiană este calculată utilizând funcția \texttt{gaussian\_blur()}, iar timpul de execuție este măsurat pentru a analiza eficiența metodei.
+    \end{itemize}
+
+    \item \textbf{Filtru bidimensional}: 
+    \begin{itemize}
+        \item Aplică un kernel bidimensional definit manual, care scoate în evidență marginile și detaliile din imagine.
+        \item Kernelul utilizat este:
+        \[
+        \begin{bmatrix}
+        1 & 1 & 1 \\
+        1 & -8 & 1 \\
+        1 & 1 & 1
+        \end{bmatrix}
+        \]
+        \item Timpul de execuție pentru această operație este măsurat folosind funcția \texttt{bidimensional\_filter()}.
+    \end{itemize}
+\end{itemize}
+
+Rezultatele includ imaginea originală, imaginea estompată cu Gaussian Blur și imaginea procesată cu filtrul bidimensional. Acestea sunt afișate utilizând funcția \texttt{show\_images()}.
+
+
+\begin{lstlisting}[language=python,caption={Funcția laborator\_5 }]
+def laborator_5():
+    image_path = select_image()
+    if not image_path:
+        print("Nicio imagine selectata.")
+        return
+
+    image = cv2.imread(image_path)
+    if image is None:
+        print("Imaginea nu exista sau formatul este invalid.")
+        return
+
+    kernel_size = 5
+    sigma = 1.5
+    start_time = time.time()
+    gaussian_filtered = gaussian_blur(image, kernel_size, sigma)
+    gaussian_time = time.time() - start_time
+    print(f"Timp procesare Gaussian Blur: {gaussian_time:.5f} secunde")
+
+    bidimensional_kernel = np.array([[1, 1, 1],
+                                      [1, -8, 1],
+                                      [1, 1, 1]])
+
+    start_time = time.time()
+    bidimensional_filtered = bidimensional_filter(image, bidimensional_kernel)
+    bidimensional_time = time.time() - start_time
+    print(f"Timp procesare Bidimensional Filter: {bidimensional_time:.5f} secunde")
+
+    show_images(image, gaussian_filtered, bidimensional_filtered)
+\end{lstlisting}
+\begin{figure}[H]
+\centering
+\subfloat[Imaginea originală]{\includegraphics[width=5.5cm]{laborator1_pi.png}}
+\subfloat[Gaussian Blur]{\includegraphics[width=5.5cm]{lab5_pi_1.png}}
+\subfloat[Filtru bidimensional]{\includegraphics[width=5.5cm]{lab5_pi_2.png}}
+\caption{Imagini generate de funcția \texttt{laborator\_5}.}
+\end{figure}
+
+
+
+
+\section{Laborator 6}
+Funcția \texttt{laborator\_6} implementează algoritmi pentru identificarea componentelor conexe într-o imagine binară, utilizând două metode: \textit{BFS} (parcurgere în lățime) și \textit{Two-Pass} (în două treceri). Scopul este de a analiza modul în care aceste metode segmentează regiuni distincte din imagine.
+
+### Algoritmi utilizați:
+\begin{itemize}
+    \item \textbf{BFS (Breadth-First Search)}:
+    \begin{itemize}
+        \item Parcurge imaginea folosind o coadă (\texttt{deque}), marcând fiecare pixel conectat în cadrul aceleiași componente conexe.
+        \item Fiecare componentă conexă primește o etichetă unică.
+    \end{itemize}
+    
+    \item \textbf{Two-Pass}:
+    \begin{itemize}
+        \item În prima trecere, fiecare pixel este etichetat pe baza vecinilor săi.
+        \item Se construiește un grafic al relațiilor dintre etichete.
+        \item În a doua trecere, etichetele sunt reduse la reprezentantul lor unic utilizând parcurgeri suplimentare.
+    \end{itemize}
+\end{itemize}
+
+Funcția începe prin convertirea imaginii selectate într-o imagine binară utilizând o funcție de prag (\texttt{threshold}). Aceasta transformă pixelii cu intensități mari ($\geq 127$) în alb ($255$) și restul în negru ($0$).
+
+Rezultatele includ:
+\begin{itemize}
+    \item Imaginea originală binară.
+    \item Imaginea segmentată utilizând algoritmul BFS.
+    \item Imaginea segmentată utilizând algoritmul Two-Pass.
+\end{itemize}
+
+Fiecare componentă conexă este vizualizată folosind culori diferite pentru o interpretare ușoară.
+\begin{lstlisting}[language=python,caption={Funcția laborator\_6 }]
+from collections import deque
+
+def connected_components_bfs(img):
+    height, width = img.shape
+    labels = np.zeros((height, width), dtype=np.int32)
+    label = 0
+
+    for i in range(height):
+        for j in range(width):
+            if img[i, j] == 0 and labels[i, j] == 0:
+                label += 1
+                q = deque()
+                q.append((i, j))
+                labels[i, j] = label
+
+                while q:
+                    x, y = q.popleft()
+                    for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                        nx, ny = x + dx, y + dy
+                        if 0 <= nx < height and 0 <= ny < width and img[nx, ny] == 0 and labels[nx, ny] == 0:
+                            labels[nx, ny] = label
+                            q.append((nx, ny))
+    return labels
+
+def connected_components_two_pass(img):
+    height, width = img.shape
+    labels = np.zeros((height, width), dtype=np.int32)
+    label = 0
+    edges = {}
+
+    for i in range(height):
+        for j in range(width):
+            if img[i, j] == 0:
+                neighbors = []
+                if i > 0 and labels[i - 1, j] > 0:
+                    neighbors.append(labels[i - 1, j])
+                if j > 0 and labels[i, j - 1] > 0:
+                    neighbors.append(labels[i, j - 1])
+
+                if not neighbors:
+                    label += 1
+                    labels[i, j] = label
+                    edges[label] = []
+                else:
+                    min_label = min(neighbors)
+                    labels[i, j] = min_label
+                    for neighbor in neighbors:
+                        if neighbor != min_label:
+                            edges[min_label].append(neighbor)
+                            edges[neighbor].append(min_label)
+
+    new_labels = np.zeros(label + 1, dtype=np.int32)
+    new_label = 0
+
+    for i in range(1, label + 1):
+        if new_labels[i] == 0:
+            new_label += 1
+            q = deque([i])
+            new_labels[i] = new_label
+
+            while q:
+                x = q.popleft()
+                for y in edges.get(x, []):
+                    if new_labels[y] == 0:
+                        new_labels[y] = new_label
+                        q.append(y)
+
+    for i in range(height):
+        for j in range(width):
+            if labels[i, j] > 0:
+                labels[i, j] = new_labels[labels[i, j]]
+
+    return labels
+
+def laborator_6():
+    image_path = select_image()
+    if not image_path:
+        print("Nicio imagine selectata.")
+        return
+
+    binary_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if binary_image is None:
+        print("Imaginea nu exista sau formatul este invalid.")
+        return
+
+    _, binary_image = cv2.threshold(binary_image, 127, 255, cv2.THRESH_BINARY)
+
+    # BFS Connected Components
+    labels_bfs = connected_components_bfs(binary_image)
+
+    # Two-Pass Connected Components
+    labels_two_pass = connected_components_two_pass(binary_image)
+
+    def visualize_labels(labels):
+        unique_labels = np.unique(labels)
+        colored_labels = np.zeros((*labels.shape, 3), dtype=np.uint8)
+        for label in unique_labels:
+            if label == 0:
+                continue
+            mask = (labels == label)
+            color = np.random.randint(0, 255, size=3)
+            colored_labels[mask] = color
+        return colored_labels
+
+    colored_bfs = visualize_labels(labels_bfs)
+    colored_two_pass = visualize_labels(labels_two_pass)
+
+    cv2.imshow("Imagine Originala", binary_image)
+    cv2.imshow("BFS Algorithm", colored_bfs)
+    cv2.imshow("Two-Pass Algorithm", colored_two_pass)
+
+    key = cv2.waitKey(0)
+    if key == 27:
+        cv2.destroyAllWindows()
+
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\subfloat[Imaginea Originală]{\includegraphics[width=5.5cm]{lab6_pi_1.png}}
+\subfloat[BFS Algorithm]{\includegraphics[width=5.5cm]{lab6_pi_2.png}}
+\subfloat[Two-Pass Algorithm]{\includegraphics[width=5.5cm]{lab6_pi_3.png}}
+\caption{Imagini generate de funcția \texttt{laborator\_6}.}
+\end{figure}
+
+
+
+\begin{center}
+    {\Huge \textbf{TEME}}
+\end{center}
+
+\section{Tema 1}
+
+Funcția \texttt{tema\_1} implementează un algoritm de cuantizare și dithering aplicat asupra unei imagini în tonuri de gri. Scopul este de a reduce numărul de niveluri de gri utilizând praguri detectate automat și de a îmbunătăți vizualizarea prin metoda Floyd-Steinberg.
+
+### Operații realizate:
+\begin{itemize}
+    \item \textbf{Detectarea vârfurilor din histogramă}:
+    \begin{itemize}
+        \item Histogramă normalizată este calculată din imagine.
+        \item Vârfurile histogramelor (praguri de cuantizare) sunt identificate utilizând o metodă bazată pe ferestre locale.
+        \item Aceste praguri servesc drept referințe pentru cuantizarea imaginii.
+    \end{itemize}
+    
+    \item \textbf{Cuantizarea imaginii}:
+    \begin{itemize}
+        \item Fiecare pixel este asociat celui mai apropiat prag (vârf din histogramă).
+        \item Rezultatul este o imagine cu niveluri de gri limitate la valorile pragurilor.
+    \end{itemize}
+    
+    \item \textbf{Dithering Floyd-Steinberg}:
+    \begin{itemize}
+        \item Se aplică metoda Floyd-Steinberg pentru distribuirea erorii de cuantizare către pixelii vecini.
+        \item Această metodă îmbunătățește aspectul vizual al imaginii prin reducerea efectelor de banding.
+    \end{itemize}
+    
+    \item \textbf{Generarea histogramei normalizate}:
+    \begin{itemize}
+        \item Este afișată histograma normalizată pentru a vizualiza distribuția nivelurilor de gri.
+    \end{itemize}
+\end{itemize}
+
+Rezultatele includ:
+\begin{itemize}
+    \item Imaginea originală.
+    \item Imaginea cuantizată.
+    \item Imaginea ditherată utilizând metoda Floyd-Steinberg.
+    \item Histogramă normalizată a imaginii originale.
+\end{itemize}
+
+\begin{lstlisting}[language=python,caption={Funcția tema\_1}]
+def tema_1():
+    image_path = select_image()
+    if not image_path:
+        print("Nicio imagine selectata.")
+        return
+
+    img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if img is None:
+        print("Imaginea nu exista sau formatul este invalid.")
+        return
+
+    def detect_histogram_peaks(img, window_size=5, threshold=0.0003):
+        histogram, bin_edges = np.histogram(img.flatten(), bins=256, range=[0, 256], density=True)
+        normalized_hist = histogram / histogram.sum()
+        peaks = []
+        for idx in range(window_size, 256 - window_size):
+            local_mean = np.mean(normalized_hist[idx - window_size: idx + window_size + 1])
+            if (normalized_hist[idx] > local_mean + threshold and
+                normalized_hist[idx] >= np.max(normalized_hist[idx - window_size: idx + window_size + 1])):
+                peaks.append(idx)
+        peaks = [0] + peaks + [255]
+        return peaks, normalized_hist
+
+    def apply_quantization(img, peaks):
+        quantized_img = img.copy()
+        rows, cols = img.shape
+        for row in range(rows):
+            for col in range(cols):
+                pixel_val = img[row, col]
+                nearest_peak = min(peaks, key=lambda p: abs(int(p) - int(pixel_val)))
+                quantized_img[row, col] = nearest_peak
+        return quantized_img
+
+    def apply_floyd_steinberg_dithering(img, peaks):
+        img = img.astype(float)
+        rows, cols = img.shape
+        for row in range(rows):
+            for col in range(cols):
+                current_pixel = img[row, col]
+                quantized_pixel = min(peaks, key=lambda p: abs(p - current_pixel))
+                img[row, col] = quantized_pixel
+                error = current_pixel - quantized_pixel
+                if col + 1 < cols:
+                    img[row, col + 1] += error * 7 / 16
+                if row + 1 < rows:
+                    if col > 0:
+                        img[row + 1, col - 1] += error * 3 / 16
+                    img[row + 1, col] += error * 5 / 16
+                    if col + 1 < cols:
+                        img[row + 1, col + 1] += error * 1 / 16
+        return np.clip(img, 0, 255).astype(np.uint8)
+
+    peaks, normalized_hist = detect_histogram_peaks(img)
+    print("Histogram peaks (threshold values):", peaks)
+
+    quantized_img = apply_quantization(img, peaks)
+    dithered_img = apply_floyd_steinberg_dithering(quantized_img, peaks)
+    cv2.imshow("Original Image", img)
+    cv2.imshow("Quantized Image", quantized_img)
+    cv2.imshow("Dithered Image (Floyd-Steinberg)", dithered_img)
+
+    def plot_histogram():
+        plt.plot(normalized_hist, label="Histograma Normalizata")
+        plt.title("Histograma Normalizata")
+        plt.xlabel("Niveluri de gri")
+        plt.ylabel("Frecventa")
+        plt.legend()
+
+    show_plot_in_cv2(plot_histogram, title="Histograma")
+
+    key = cv2.waitKey(0)
+    if key == 27:
+        cv2.destroyAllWindows()
+
+
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\subfloat[Imaginea Originală]{\includegraphics[width=5.5cm]{tema1_1.png}}
+\subfloat[Imagine Cuantizată]{\includegraphics[width=5.5cm]{tema1_2.png}}
+\subfloat[Imagine(Floyd-Steinberg)]{\includegraphics[width=5.5cm]{tema1_3.png}}
+\newline
+\subfloat[Histograma]{\includegraphics[width=5.5cm]{tema1_histo.png}}
+\caption{Imagini generate de funcția \texttt{tema\_1}}
+\end{figure}
+
+
+
+
+
+\section{Tema 2}
+
+Funcția \texttt{tema\_2} implementează două operații esențiale pentru prelucrarea imaginilor în tonuri de gri: binarizarea globală și egalizarea histogramei. Scopul este de a transforma și îmbunătăți vizibilitatea detaliilor în imagine.
+
+### Operații realizate:
+\begin{itemize}
+    \item \textbf{Binarizarea globală}:
+    \begin{itemize}
+        \item Este determinată o valoare prag calculată ca media nivelurilor de gri din imagine.
+        \item Fiecare pixel este transformat în alb sau negru în funcție de această valoare prag.
+    \end{itemize}
+
+    \item \textbf{Egalizarea histogramei}:
+    \begin{itemize}
+        \item Se aplică un algoritm care redistribuie valorile pixelilor astfel încât să crească contrastul imaginii.
+        \item Această metodă este utilă pentru a evidenția detaliile în imagini întunecate sau slab iluminate.
+    \end{itemize}
+    
+    \item \textbf{Generarea histogramelor}:
+    \begin{itemize}
+        \item Se afișează histograma imaginii originale pentru a vizualiza distribuția inițială a nivelurilor de gri.
+        \item Se generează histograma imaginii egalizate pentru a observa impactul procesului de egalizare.
+    \end{itemize}
+\end{itemize}
+
+Rezultatele includ:
+\begin{itemize}
+    \item Imaginea originală.
+    \item Imaginea binarizată utilizând pragul calculat automat.
+    \item Imaginea cu histograma egalizată.
+    \item Histogramă a imaginii originale și egalizate.
+\end{itemize}
+
+\begin{lstlisting}[language=python,caption={Funcția tema\_2}]
+def tema_2():
+    image_path = select_image()
+    if not image_path:
+        print("Nicio imagine selectata.")
+        return
+
+    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if image is None:
+        print("Imaginea nu exista sau formatul este invalid.")
+        return
+
+    def prag_binarizare_globala(image):
+        valoare_prag = np.mean(image)
+        _, imagine_binara = cv2.threshold(image, valoare_prag, 255, cv2.THRESH_BINARY)
+        return imagine_binara, valoare_prag
+
+    def egalizare_histograma(image):
+        imagine_egalizata = cv2.equalizeHist(image)
+        return imagine_egalizata
+
+    imagine_binara, valoare_prag = prag_binarizare_globala(image)
+    imagine_egalizata = egalizare_histograma(image)
+
+    # Afișarea imaginilor
+    cv2.imshow("Imagine originala", image)
+    cv2.imshow(f"Imagine binarizata (Prag: {valoare_prag:.2f})", imagine_binara)
+    cv2.imshow("Imagine egalizata", imagine_egalizata)
+
+    def plot_original_histogram():
+        plt.title("Histograma Originala")
+        plt.hist(image.ravel(), bins=256, range=[0, 256], color='black')
+        plt.xlabel("Niveluri de gri")
+        plt.ylabel("Frecventa")
+
+    def plot_equalized_histogram():
+        plt.title("Histograma Egalizata")
+        plt.hist(imagine_egalizata.ravel(), bins=256, range=[0, 256], color='black')
+        plt.xlabel("Niveluri de gri")
+        plt.ylabel("Frecventa")
+
+    show_plot_in_cv2(plot_original_histogram, title="Histograma Originala")
+    show_plot_in_cv2(plot_equalized_histogram, title="Histograma Egalizata")
+
+    key = cv2.waitKey(0)
+    if key == 27:
+        cv2.destroyAllWindows()
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\subfloat[Imaginea Originală]{\includegraphics[width=5.5cm]{tema2_1.png}}
+\subfloat[Imagine Binarizată]{\includegraphics[width=5.5cm]{tema2_2.png}}
+\subfloat[Imagine Egalizată]{\includegraphics[width=5.5cm]{tema2_3.png}}
+\newline
+\subfloat[Histograma Originală]{\includegraphics[width=5.5cm]{tema2_4.png}}
+\subfloat[Histograma Egalizată]{\includegraphics[width=5.5cm]{tema2_5.png}}
+\caption{Imagini generate de funcția \texttt{tema\_2}}
+\end{figure}
+
+
+
+\section{Tema 3}
+
+Funcția \texttt{tema\_3} implementează analiza și filtrarea unei imagini în domeniul frecvenței utilizând transformata Fourier. Se aplică diferite tipuri de filtre (trece-jos și trece-sus, atât circulare cât și gaussiene) pentru a evidenția sau elimina anumite frecvențe din imagine.
+
+### Operații realizate:
+\begin{itemize}
+    \item \textbf{Calculul spectrului Fourier al imaginii}:
+    \begin{itemize}
+        \item Imaginea este transformată din domeniul spațial în domeniul frecvenței utilizând transformata Fourier 2D.
+        \item Spectrul de frecvență este centrat pentru o mai bună vizualizare.
+    \end{itemize}
+
+    \item \textbf{Crearea și aplicarea de filtre}:
+    \begin{itemize}
+        \item \textbf{Filtre circulare}:
+        \begin{itemize}
+            \item Filtru trece-jos: permite doar frecvențele joase și elimină frecvențele înalte.
+            \item Filtru trece-sus: permite doar frecvențele înalte și elimină frecvențele joase.
+        \end{itemize}
+        \item \textbf{Filtre gaussiene}:
+        \begin{itemize}
+            \item Filtru trece-jos gaussian: aplică o funcție gaussiană pentru a reține frecvențele joase.
+            \item Filtru trece-sus gaussian: inversează filtrul gaussian pentru a păstra frecvențele înalte.
+        \end{itemize}
+    \end{itemize}
+
+    \item \textbf{Reconstrucția imaginii filtrate}:
+    \begin{itemize}
+        \item Frecvențele filtrate sunt transformate înapoi în domeniul spațial utilizând transformata Fourier inversă.
+    \end{itemize}
+\end{itemize}
+
+### Rezultate generate:
+\begin{itemize}
+    \item Imaginea originală.
+    \item Spectrul Fourier al imaginii originale.
+    \item Imaginile și spectrele rezultate după aplicarea fiecărui tip de filtru.
+\end{itemize}
+
+\begin{lstlisting}[language=python,caption={Funcția tema\_3}]
+def tema_3():
+    image_path = select_image()
+    if not image_path:
+        print("Nicio imagine selectata.")
+        return
+
+    img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if img is None:
+        print("Imaginea nu exista sau formatul este invalid.")
+        return
+
+    def compute_fourier_spectrum(img):
+        dft = np.fft.fft2(img)
+        dft_shift = np.fft.fftshift(dft)
+        spectrum = 20 * np.log(np.abs(dft_shift) + 1)
+        return dft_shift, spectrum
+
+    def apply_frequency_filter(img, filter_mask):
+        dft_shift, _ = compute_fourier_spectrum(img)
+        filtered_dft = dft_shift * filter_mask
+        spectrum = 20 * np.log(np.abs(filtered_dft) + 1)
+        inverse_dft = np.fft.ifft2(np.fft.ifftshift(filtered_dft))
+        return np.abs(inverse_dft), spectrum
+
+    def create_filter_mask(shape, filter_type, radius):
+        rows, cols = shape
+        crow, ccol = rows // 2, cols // 2
+        mask = np.zeros((rows, cols), np.float32)
+
+        if filter_type == "low_pass":
+            cv2.circle(mask, (ccol, crow), radius, 1, thickness=-1)
+        elif filter_type == "high_pass":
+            mask[:] = 1
+            cv2.circle(mask, (ccol, crow), radius, 0, thickness=-1)
+
+        return mask
+
+    def create_gaussian_filter(shape, filter_type, sigma):
+        rows, cols = shape
+        crow, ccol = rows // 2, cols // 2
+        x = np.arange(cols) - ccol
+        y = np.arange(rows) - crow
+        x, y = np.meshgrid(x, y)
+
+        if filter_type == "low_pass":
+            mask = np.exp(-(x**2 + y**2) / (2 * sigma**2))
+        elif filter_type == "high_pass":
+            mask = 1 - np.exp(-(x**2 + y**2) / (2 * sigma**2))
+        return mask
+
+    dft_shift, original_spectrum = compute_fourier_spectrum(img)
+
+    radius = 30
+    low_pass_mask = create_filter_mask(img.shape, "low_pass", radius)
+    high_pass_mask = create_filter_mask(img.shape, "high_pass", radius)
+
+    img_low_pass, spectrum_low_pass = apply_frequency_filter(img, low_pass_mask)
+    img_high_pass, spectrum_high_pass = apply_frequency_filter(img, high_pass_mask)
+
+    sigma = 30
+    gaussian_low_pass = create_gaussian_filter(img.shape, "low_pass", sigma)
+    gaussian_high_pass = create_gaussian_filter(img.shape, "high_pass", sigma)
+
+    img_gaussian_low_pass, spectrum_gaussian_low_pass = apply_frequency_filter(img, gaussian_low_pass)
+    img_gaussian_high_pass, spectrum_gaussian_high_pass = apply_frequency_filter(img, gaussian_high_pass)
+
+    original_spectrum = cv2.normalize(original_spectrum, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+    spectrum_low_pass = cv2.normalize(spectrum_low_pass, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+    spectrum_high_pass = cv2.normalize(spectrum_high_pass, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+    spectrum_gaussian_low_pass = cv2.normalize(spectrum_gaussian_low_pass, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+    spectrum_gaussian_high_pass = cv2.normalize(spectrum_gaussian_high_pass, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+
+    cv2.imshow("Imagine Originala", img)
+    cv2.imshow("Spectru Fourier Original", original_spectrum)
+    cv2.imshow("Imagine Trece-Jos Circular", img_low_pass.astype(np.uint8))
+    cv2.imshow("Spectru Trece-Jos Circular", spectrum_low_pass)
+    cv2.imshow("Imagine Trece-Sus Circular", img_high_pass.astype(np.uint8))
+    cv2.imshow("Spectru Trece-Sus Circular", spectrum_high_pass)
+    cv2.imshow("Imagine Trece-Jos Gaussian", img_gaussian_low_pass.astype(np.uint8))
+    cv2.imshow("Spectru Trece-Jos Gaussian", spectrum_gaussian_low_pass)
+    cv2.imshow("Imagine Trece-Sus Gaussian", img_gaussian_high_pass.astype(np.uint8))
+    cv2.imshow("Spectru Trece-Sus Gaussian", spectrum_gaussian_high_pass)
+
+    key = cv2.waitKey(0)
+    if key == 27: 
+        cv2.destroyAllWindows()
+\end{lstlisting}
+\begin{figure}[H]
+\centering
+\includegraphics[width=5.5cm]{tema3_1.png} \hspace{0.2cm}
+\includegraphics[width=5.5cm]{tema3_2.png}
+\vspace{0.2cm}
+
+\includegraphics[width=5.5cm]{tema3_3.png} \hspace{0.2cm}
+\includegraphics[width=5.5cm]{tema3_4.png}
+\vspace{0.2cm}
+
+\includegraphics[width=5.5cm]{tema3_5.png} \hspace{0.2cm}
+\includegraphics[width=5.5cm]{tema3_6.png}
+\vspace{0.2cm}
+
+\includegraphics[width=5.5cm]{tema3_7.png} \hspace{0.2cm}
+\includegraphics[width=5.5cm]{tema3_8.png}
+\vspace{0.2cm}
+
+\includegraphics[width=5.5cm]{tema3_9.png} \hspace{0.2cm}
+\includegraphics[width=5.5cm]{tema3_10.png}
+\caption{Imagini generate de funcția \texttt{tema\_3}}
+\end{figure}
+
+
+
+
+\section{Tema 4}
+
+Funcția \texttt{tema\_4} implementează procesarea imaginii prin două tehnici de morfologie: extragerea contururilor și umplerea regiunilor. Aceasta este însoțită de o interfață grafică simplă creată cu biblioteca \texttt{tkinter}.
+
+\begin{itemize}
+    \item \textbf{Extragerea contururilor utilizând morfologie}:
+    \begin{itemize}
+        \item Se identifică contururile obiectelor din imagine folosind operațiuni morfologice.
+    \end{itemize}
+    \item \textbf{Umplerea regiunilor utilizând morfologie}:
+    \begin{itemize}
+        \item Se umplu regiunile obiectelor utilizând operații morfologice.
+    \end{itemize}
+    \item \textbf{Interfața grafică cu Tkinter}:
+    \begin{itemize}
+        \item Aplicația afișează titlul "Prelucrarea imaginilor".
+        \item Interfața permite utilizatorului să selecteze și să proceseze imaginea.
+    \end{itemize}
+\end{itemize}
+\begin{itemize}
+    \item Imaginea originală.
+    \item Imaginea procesată pentru extragerea contururilor.
+    \item Imaginea procesată pentru umplerea regiunilor.
+\end{itemize}
+
+\begin{lstlisting}[language=python,caption={Funcția tema\_4}]
+def tema_4():
+    image_path = select_image()
+    if not image_path:
+        print("Nicio imagine selectata.")
+        return
+
+    imagine = cv2.imread(image_path)
+    if imagine is None:
+        print("Imaginea nu exista sau formatul este invalid.")
+        return
+
+    contur = contur_extragere(imagine)
+    umplere = umplere_regiuni(imagine)
+
+    cv2.imshow("Imaginea Originala", imagine)
+    cv2.imshow("Extragere Contur cu Morfologie", contur)
+    cv2.imshow("Umplere Regiuni cu Morfologie", umplere)
+
+    key = cv2.waitKey(0)
+    if key == 27:
+        cv2.destroyAllWindows()
+
+root = tk.Tk()
+root.title("PI")
+root.geometry("800x600")
+root.minsize(600, 400)
+
+frame_content = tk.Frame(root, bg="lightblue", padx=20, pady=20)
+frame_content.pack(fill="both", expand=True)
+
+label_title = tk.Label(
+    frame_content,
+    text="Prelucrarea imaginilor",
+    font=("Arial", 24, "bold"),
+    bg="lightblue",
+    fg="black"
+)
+label_title.pack(pady=20)
+
+def contur_extragere(imagine):
+    imagine_gray = cv2.cvtColor(imagine, cv2.COLOR_BGR2GRAY)
+    kernel = np.ones((3, 3), np.uint8)
+    eroziune = cv2.erode(imagine_gray, kernel, iterations=1)
+    dilatare = cv2.dilate(imagine_gray, kernel, iterations=1)
+    contur = cv2.absdiff(dilatare, eroziune)
+    return contur
+
+def umplere_regiuni(imagine):
+    imagine_gray = cv2.cvtColor(imagine, cv2.COLOR_BGR2GRAY)
+    _, imagine_binara = cv2.threshold(imagine_gray, 127, 255, cv2.THRESH_BINARY)
+    kernel = np.ones((3, 3), np.uint8)
+    umplere = cv2.morphologyEx(imagine_binara, cv2.MORPH_CLOSE, kernel)
+    return umplere
+\end{lstlisting}
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=5.5cm]{tema4_1.png} \hspace{0.2cm}
+\includegraphics[width=5.5cm]{tema4_2.png}
+\vspace{0.2cm}
+
+\includegraphics[width=5.5cm]{tema4_3.png}
+\caption{Imaginea generate de tema 4}
+\end{figure}
+
+
+\section{Tema 5}
+
+Funcția \texttt{tema\_5} implementează algoritmi pentru binarizarea unei imagini, detectarea contururilor folosind metoda urmărirea contururilor și codificarea acestora prin codul în lanț (chain code). Rezultatele includ afișarea contururilor pe imagine și codurile în lanț pentru fiecare contur.
+
+
+\begin{itemize}
+    \item \textbf{Crearea imaginii binare}:
+    \begin{itemize}
+        \item Imaginea originală este convertită într-o imagine binară, utilizând un prag fix (127).
+    \end{itemize}
+
+    \item \textbf{Extragerea contururilor prin urmărire}:
+    \begin{itemize}
+        \item Se detectează contururile în imaginea binară folosind un algoritm de urmărire, ce marchează contururile pixel cu pixel.
+        \item Contururile detectate sunt salvate într-o listă.
+    \end{itemize}
+
+    \item \textbf{Codificarea contururilor cu cod în lanț}:
+    \begin{itemize}
+        \item Pentru fiecare contur, se generează un cod în lanț care reprezintă direcțiile relative între punctele succesive ale conturului.
+    \end{itemize}
+
+    \item \textbf{Suprapunerea contururilor pe imagine}:
+    \begin{itemize}
+        \item Contururile detectate sunt desenate pe imaginea binară, utilizând o culoare distinctă (verde).
+    \end{itemize}
+\end{itemize}
+
+
+\begin{itemize}
+    \item Imaginea binară.
+    \item Imaginea cu contururile suprapuse.
+    \item Codurile în lanț afișate în consolă pentru fiecare contur detectat.
+\end{itemize}
+
+\begin{lstlisting}[language=python,caption={Funcția tema\_5}]
+def tema_5():
+    image_path = select_image()
+    if not image_path:
+        print("Nicio imagine selectata.")
+        return
+
+    binary_image = create_binary_image(image_path)
+    contours = contour_following(binary_image)
+    chain_codes = [chain_code(binary_image, contour) for contour in contours]
+
+    overlay_image = overlay_contours(binary_image, contours)
+    cv2.imshow("Contours Overlay", overlay_image)
+
+    # Display chain codes in console
+    for i, chain in enumerate(chain_codes):
+        print(f"Chain Code for Contour {i + 1}: {chain}")
+
+    key = cv2.waitKey(0)
+    if key == 27:
+        cv2.destroyAllWindows()
+\end{lstlisting}
+
+### Cod funcții auxiliare
+\begin{lstlisting}[language=python,caption={Funcții auxiliare pentru procesarea imaginilor}]
+def create_binary_image(image_path):
+    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    _, binary = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
+    return binary
+
+def contour_following(binary_image):
+    contours = []
+    visited = np.zeros_like(binary_image, dtype=bool)
+    rows, cols = binary_image.shape
+
+    for r in range(rows):
+        for c in range(cols):
+            if binary_image[r, c] == 0 and not visited[r, c]:
+                contour = []
+                start = (r, c)
+                current = start
+                prev_dir = 0
+
+                while True:
+                    contour.append(current)
+                    visited[current] = True
+
+                    found_next = False
+                    for i in range(8):
+                        next_dir = (prev_dir + i) % 8
+                        dr, dc = direction_offset(next_dir)
+                        nr, nc = current[0] + dr, current[1] + dc
+
+                        if 0 <= nr < rows and 0 <= nc < cols and binary_image[nr, nc] == 0 and not visited[nr, nc]:
+                            current = (nr, nc)
+                            prev_dir = (next_dir + 4) % 8
+                            found_next = True
+                            break
+
+                    if not found_next or current == start:
+                        break
+
+                contours.append(contour)
+
+    return contours
+
+def direction_offset(direction):
+    offsets = [
+        (-1, 0), (-1, 1), (0, 1), (1, 1),
+        (1, 0), (1, -1), (0, -1), (-1, -1)
+    ]
+    return offsets[direction]
+
+def chain_code(binary_image, contour):
+    chain = []
+    start = contour[0]
+    current = start
+    prev_dir = 0
+
+    for _ in range(len(contour) - 1):
+        for i in range(8):
+            next_dir = (prev_dir + i) % 8
+            dr, dc = direction_offset(next_dir)
+            next_pixel = (current[0] + dr, current[1] + dc)
+
+            if next_pixel in contour:
+                chain.append(next_dir)
+                current = next_pixel
+                prev_dir = (next_dir + 4) % 8
+                break
+
+    return chain
+
+def overlay_contours(binary_image, contours):
+    overlay = cv2.cvtColor(binary_image, cv2.COLOR_GRAY2BGR)
+    for contour in contours:
+        for point in contour:
+            overlay[point[0], point[1]] = (0, 255, 0)  
+    return overlay
+\end{lstlisting}
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=5.5cm]{tema1_1.png} \hspace{0.2cm}
+\includegraphics[width=5.5cm]{tema5_1.png}
+\caption{Imagini generate de funcția \texttt{tema\_5}: Imaginea binară și imaginea cu contururi suprapuse.}
+\end{figure}
+
+
+\begin{thebibliography}{99}
+\bibitem{OpenCVGuide} 
+\textsc{G. Bradski} \c{s}i \textsc{A. Kaehler}, \emph{Learning OpenCV: Computer Vision with the OpenCV Library}, O'Reilly Media, Sebastopol, 2008.
+\bibitem{DIPBook} 
+\textsc{R.C. Gonzalez} \c{s}i \textsc{R.E. Woods}, \emph{Digital Image Processing}, Pearson Education, London, 2018.
+\bibitem{link1} \url{https://classroom.google.com/c/NzE5MzExMTI0MjI1}
+\end{thebibliography}
+
+\end{document}
