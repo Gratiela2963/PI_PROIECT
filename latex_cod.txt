@@ -95,7 +95,7 @@ Codul este structurat modular pentru a asigura o utilizare eficientă și o înt
     \end{itemize}
     \item \textbf{Funcții pentru teme}: Aceste funcții sunt mai complexe, implementând algoritmi specifici cerințelor tematice, cum ar fi:
     \begin{itemize}
-        \item detectarea pragurilor de histogramă,
+        \item detectarea pragurilor ,
         \item corecția luminozității și contrastului,
         \item aplicarea filtrelor Gaussiene și bidimensionale,
     \end{itemize}
@@ -157,7 +157,7 @@ def laborator_1():
 \begin{figure}[H]
 \centering
 \subfloat[Imaginea original\u{a}]{\includegraphics[width=5.8cm]{laborator1_pi.png}}
-\caption{Output al funcției laborator\_1}
+\caption{Output funcție laborator\_1}
 \end{figure}
 
 
@@ -666,10 +666,8 @@ def laborator_6():
 
     _, binary_image = cv2.threshold(binary_image, 127, 255, cv2.THRESH_BINARY)
 
-    # BFS Connected Components
     labels_bfs = connected_components_bfs(binary_image)
 
-    # Two-Pass Connected Components
     labels_two_pass = connected_components_two_pass(binary_image)
 
     def visualize_labels(labels):
@@ -704,6 +702,93 @@ def laborator_6():
 \caption{Imagini generate de funcția \texttt{laborator\_6}.}
 \end{figure}
 
+\section{Laborator 7}
+
+Acest laborator explorează procesul de detectare a marginilor din imagini, utilizând o combinație de metode avansate de procesare a imaginilor. Obiectivul principal este să obținem o reprezentare binară clară a marginilor unei imagini, aplicând două tehnici esențiale: thresholding adaptiv, care segmentează imaginea pe baza unor praguri locale, și hysteresis edge tracking, care consolidează marginile slabe prin analiza conectivității lor cu marginile puternice.
+La final, algoritmul produce două imagini distincte:
+
+Harta marginilor adaptive, generată prin thresholding adaptiv, care oferă o perspectivă inițială asupra contururilor.
+Harta marginilor consolidate, obținută prin procesul de histerezis, care reprezintă marginile finale, mai robuste și mai bine definite.
+
+\begin{lstlisting}[language=python,caption={Funcția laborator\_7 }]
+def laborator_7(image_path, window_size=15, C=2, low_ratio=0.5, high_ratio=0.2, blur_kernel=(3, 3)):
+    img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if img is None:
+        raise FileNotFoundError(f"Image at path '{image_path}' could not be loaded.")
+
+    img_blur = cv2.GaussianBlur(img, blur_kernel, 0)
+
+    grad_x = cv2.Sobel(img_blur, cv2.CV_32F, 1, 0, ksize=3)
+    grad_y = cv2.Sobel(img_blur, cv2.CV_32F, 0, 1, ksize=3)
+    magnitude = cv2.magnitude(grad_x, grad_y)
+
+    mag_8u = cv2.normalize(magnitude, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+    edge_map_adaptive = cv2.adaptiveThreshold(
+        mag_8u, 255,
+        cv2.ADAPTIVE_THRESH_MEAN_C,
+        cv2.THRESH_BINARY,
+        window_size,
+        C
+    )
+
+    mag_8u_float = mag_8u.astype(np.float32)
+    max_val = mag_8u_float.max()
+    high_thresh = max_val * high_ratio
+    low_thresh = high_thresh * low_ratio
+
+    result = np.zeros_like(mag_8u, dtype=np.uint8)
+    strong_i, strong_j = np.where(mag_8u_float > high_thresh)
+    result[strong_i, strong_j] = 255
+
+    weak_i, weak_j = np.where((mag_8u_float <= high_thresh) & (mag_8u_float >= low_thresh))
+    weak_set = set(zip(weak_i, weak_j))
+
+    neighbors = [(-1, -1), (-1, 0), (-1, 1),
+                 (0, -1),           (0, 1),
+                 (1, -1), (1, 0), (1, 1)]
+
+    to_visit = list(zip(strong_i, strong_j))
+    while to_visit:
+        x, y = to_visit.pop()
+        for dx, dy in neighbors:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < mag_8u.shape[0] and 0 <= ny < mag_8u.shape[1]:
+                if (nx, ny) in weak_set:
+                    result[nx, ny] = 255
+                    weak_set.remove((nx, ny))
+                    to_visit.append((nx, ny))
+
+    return edge_map_adaptive, result
+
+def laborator_7_button():
+    image_path = select_image()
+    if not image_path:
+        print("Nicio imagine selectată.")
+        return
+
+    try:
+        adaptive_edges, final_edges = laborator_7(
+            image_path, window_size=15, C=2, low_ratio=0.5, high_ratio=0.2
+        )
+
+        cv2.imshow("Adaptive Edge Map", adaptive_edges)
+        cv2.imshow("Final Edges (Hysteresis)", final_edges)
+        cv2.waitKey(0)
+
+        cv2.imwrite("edges_adaptive.jpg", adaptive_edges)
+        cv2.imwrite("edges_final_hysteresis.jpg", final_edges)
+    except Exception as e:
+        print(f"Error: {e}")
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=5.5cm]{lab7_1.png} \hspace{0.2cm}
+\includegraphics[width=5.5cm]{lab7_2.png}
+\caption{Imagini generate de funcția \texttt{tema\_5} }
+\end{figure}
+
+
 
 
 \begin{center}
@@ -714,7 +799,6 @@ def laborator_6():
 
 Funcția \texttt{tema\_1} implementează un algoritm de cuantizare și dithering aplicat asupra unei imagini în tonuri de gri. Scopul este de a reduce numărul de niveluri de gri utilizând praguri detectate automat și de a îmbunătăți vizualizarea prin metoda Floyd-Steinberg.
 
-### Operații realizate:
 \begin{itemize}
     \item \textbf{Detectarea vârfurilor din histogramă}:
     \begin{itemize}
@@ -845,7 +929,6 @@ def tema_1():
 
 Funcția \texttt{tema\_2} implementează două operații esențiale pentru prelucrarea imaginilor în tonuri de gri: binarizarea globală și egalizarea histogramei. Scopul este de a transforma și îmbunătăți vizibilitatea detaliilor în imagine.
 
-### Operații realizate:
 \begin{itemize}
     \item \textbf{Binarizarea globală}:
     \begin{itemize}
@@ -898,7 +981,7 @@ def tema_2():
     imagine_binara, valoare_prag = prag_binarizare_globala(image)
     imagine_egalizata = egalizare_histograma(image)
 
-    # Afișarea imaginilor
+ 
     cv2.imshow("Imagine originala", image)
     cv2.imshow(f"Imagine binarizata (Prag: {valoare_prag:.2f})", imagine_binara)
     cv2.imshow("Imagine egalizata", imagine_egalizata)
@@ -1231,7 +1314,7 @@ def tema_5():
     overlay_image = overlay_contours(binary_image, contours)
     cv2.imshow("Contours Overlay", overlay_image)
 
-    # Display chain codes in console
+
     for i, chain in enumerate(chain_codes):
         print(f"Chain Code for Contour {i + 1}: {chain}")
 
@@ -1240,7 +1323,6 @@ def tema_5():
         cv2.destroyAllWindows()
 \end{lstlisting}
 
-### Cod funcții auxiliare
 \begin{lstlisting}[language=python,caption={Funcții auxiliare pentru procesarea imaginilor}]
 def create_binary_image(image_path):
     image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
@@ -1323,7 +1405,7 @@ def overlay_contours(binary_image, contours):
 \centering
 \includegraphics[width=5.5cm]{tema1_1.png} \hspace{0.2cm}
 \includegraphics[width=5.5cm]{tema5_1.png}
-\caption{Imagini generate de funcția \texttt{tema\_5}: Imaginea binară și imaginea cu contururi suprapuse.}
+\caption{Imagini generate de funcția \texttt{tema\_5} }
 \end{figure}
 
 
@@ -1331,7 +1413,6 @@ def overlay_contours(binary_image, contours):
 \bibitem{OpenCVGuide} 
 \textsc{G. Bradski} \c{s}i \textsc{A. Kaehler}, \emph{Learning OpenCV: Computer Vision with the OpenCV Library}, O'Reilly Media, Sebastopol, 2008.
 \bibitem{DIPBook} 
-\textsc{R.C. Gonzalez} \c{s}i \textsc{R.E. Woods}, \emph{Digital Image Processing}, Pearson Education, London, 2018.
 \bibitem{link1} \url{https://classroom.google.com/c/NzE5MzExMTI0MjI1}
 \end{thebibliography}
 
