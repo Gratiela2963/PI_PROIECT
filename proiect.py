@@ -370,6 +370,77 @@ def laborator_6():
         cv2.destroyAllWindows()
 
 
+
+def laborator_7(image_path, window_size=15, C=2, low_ratio=0.5, high_ratio=0.2, blur_kernel=(3, 3)):
+    img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    if img is None:
+        raise FileNotFoundError(f"Image at path '{image_path}' could not be loaded.")
+
+    img_blur = cv2.GaussianBlur(img, blur_kernel, 0)
+
+    grad_x = cv2.Sobel(img_blur, cv2.CV_32F, 1, 0, ksize=3)
+    grad_y = cv2.Sobel(img_blur, cv2.CV_32F, 0, 1, ksize=3)
+    magnitude = cv2.magnitude(grad_x, grad_y)
+
+    mag_8u = cv2.normalize(magnitude, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+    edge_map_adaptive = cv2.adaptiveThreshold(
+        mag_8u, 255,
+        cv2.ADAPTIVE_THRESH_MEAN_C,
+        cv2.THRESH_BINARY,
+        window_size,
+        C
+    )
+
+    mag_8u_float = mag_8u.astype(np.float32)
+    max_val = mag_8u_float.max()
+    high_thresh = max_val * high_ratio
+    low_thresh = high_thresh * low_ratio
+
+    result = np.zeros_like(mag_8u, dtype=np.uint8)
+    strong_i, strong_j = np.where(mag_8u_float > high_thresh)
+    result[strong_i, strong_j] = 255
+
+    weak_i, weak_j = np.where((mag_8u_float <= high_thresh) & (mag_8u_float >= low_thresh))
+    weak_set = set(zip(weak_i, weak_j))
+
+    neighbors = [(-1, -1), (-1, 0), (-1, 1),
+                 (0, -1),           (0, 1),
+                 (1, -1), (1, 0), (1, 1)]
+
+    to_visit = list(zip(strong_i, strong_j))
+    while to_visit:
+        x, y = to_visit.pop()
+        for dx, dy in neighbors:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < mag_8u.shape[0] and 0 <= ny < mag_8u.shape[1]:
+                if (nx, ny) in weak_set:
+                    result[nx, ny] = 255
+                    weak_set.remove((nx, ny))
+                    to_visit.append((nx, ny))
+
+    return edge_map_adaptive, result
+
+def laborator_7_button():
+    image_path = select_image()
+    if not image_path:
+        print("Nicio imagine selectată.")
+        return
+
+    try:
+        adaptive_edges, final_edges = laborator_7(
+            image_path, window_size=15, C=2, low_ratio=0.5, high_ratio=0.2
+        )
+
+        cv2.imshow("Adaptive Edge Map", adaptive_edges)
+        cv2.imshow("Final Edges (Hysteresis)", final_edges)
+        cv2.waitKey(0)
+
+        cv2.imwrite("edges_adaptive.jpg", adaptive_edges)
+        cv2.imwrite("edges_final_hysteresis.jpg", final_edges)
+    except Exception as e:
+        print(f"Error: {e}")
+
+
 ########################## TEME LABORATOR ###########################################
 
 def tema_1():
@@ -828,6 +899,14 @@ btn_lab6 = tk.Button(
     relief="flat", padx=10, pady=5
 )
 btn_lab6.pack(pady=5)
+btn_lab7 = tk.Button(
+    frame_laboratoare,
+    text="Laborator 7",
+    command=laborator_7_button,
+    bg="#1E90FF", fg="white", font=("Arial", 12),
+    relief="flat", padx=10, pady=5
+)
+btn_lab7.pack(pady=5)
 ############### Butoane Teme Laborator
 btn_tema1 = tk.Button(
     frame_teme,
